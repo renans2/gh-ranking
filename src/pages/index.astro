@@ -5,15 +5,16 @@ import PixelIcon from '../components/PixelIcon';
 import ThemeToggle from '../components/ThemeToggle';
 import Layout from '../layouts/Layout.astro';
 import { getLeaderboard } from '../lib/leaderboard';
+import { selectedLanguage } from '../utils/language-filter';
 import { STAR } from '../utils/pixel-art';
 
-// Rendered on every request, so each visit reads the latest snapshot and ?language= filters on the server.
+// Rendered on every request, so each visit reads the latest snapshot with one query.
 export const prerender = false;
 
-// One query per request: the language buttons need every row, so filter in memory.
+// All rows are rendered; ones outside ?language= start hidden, so the filter buttons
+// can switch languages in the page without loading it again.
 const rows = await getLeaderboard();
-const language = Astro.url.searchParams.get('language')?.trim().toLowerCase() || null;
-const visibleRows = language ? rows.filter((row) => row.language?.toLowerCase() === language) : rows;
+const language = selectedLanguage(Astro.url.searchParams);
 
 const snapshotDate = rows[0]?.snapshot_date;
 const previousDate = rows[0]?.previous_date;
@@ -47,7 +48,7 @@ if (snapshotDate) {
 		rows.length > 0 && (
 			<>
 				<LanguageFilter rows={rows} selected={language} />
-				<LeaderboardTable rows={visibleRows} />
+				<LeaderboardTable rows={rows} language={language} />
 			</>
 		)
 	}

@@ -1,15 +1,19 @@
 ---
 import type { LeaderboardRow } from '../lib/leaderboard';
 import { avatarUrl, formatNumber, rankChange, starsLabel } from '../utils/format';
+import { matchesLanguage } from '../utils/language-filter';
 import { ARROW_DOWN, ARROW_RIGHT, ARROW_UP, FORK, STAR } from '../utils/pixel-art';
 import LanguageIcon from './LanguageIcon.astro';
 import PixelIcon from './PixelIcon';
 
 interface Props {
 	rows: LeaderboardRow[];
+	/** The ?language= filter (lowercased); other rows render hidden for LanguageFilter to show. */
+	language: string | null;
 }
 
-const { rows } = Astro.props;
+const { rows, language } = Astro.props;
+const anyMatch = rows.some((row) => matchesLanguage(row.language, language));
 
 const medalClass: Record<number, string> = {
 	1: 'bg-gold',
@@ -51,7 +55,11 @@ const wide = 'hidden sm:table-cell';
 				const starsDeltaClass = { 'text-up': starsDelta > 0, 'text-down': starsDelta < 0 };
 				const [owner, name] = row.full_name.split('/');
 				return (
-					<tr class="group hover:bg-hover">
+					<tr
+						data-language={row.language ?? ''}
+						hidden={!matchesLanguage(row.language, language)}
+						class="group hover:bg-hover"
+					>
 						<td class:list={[td, 'relative pl-6 text-center']}>
 							{/* Game-menu style cursor on the hovered row */}
 							<PixelIcon
@@ -138,15 +146,11 @@ const wide = 'hidden sm:table-cell';
 					</tr>
 				);
 			})}
-			{
-				rows.length === 0 && (
-					<tr>
-						<td colspan="6" class="px-3 py-8 text-center text-muted">
-							No repos in this language right now.
-						</td>
-					</tr>
-				)
-			}
+			<tr data-filter-empty hidden={anyMatch}>
+				<td colspan="6" class="px-3 py-8 text-center text-muted">
+					No repos in this language right now.
+				</td>
+			</tr>
 		</tbody>
 	</table>
 </div>
