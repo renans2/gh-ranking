@@ -1,5 +1,7 @@
 ---
 import { Font } from 'astro:assets';
+import PixelIcon from '../components/PixelIcon';
+import { HEART } from '../utils/pixel-art';
 import '../styles/global.css';
 
 interface Props {
@@ -37,5 +39,17 @@ const { title } = Astro.props;
 		<main class="mx-auto max-w-5xl px-4 py-10">
 			<slot />
 		</main>
+		<footer class="flex items-center justify-center gap-2 px-4 pb-10 text-xl text-muted">
+			made with
+			<PixelIcon art={HEART} className="h-4 w-[18px] text-heart" />
+			<span class="sr-only">love</span>
+			by
+			<a
+				href="https://github.com/renans2"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="text-accent decoration-2 underline-offset-4 hover:underline">renans2</a
+			>
+		</footer>
 	</body>
 </html>

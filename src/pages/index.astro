@@ -6,7 +6,7 @@ import ThemeToggle from '../components/ThemeToggle';
 import Layout from '../layouts/Layout.astro';
 import { getLeaderboard } from '../lib/leaderboard';
 import { selectedLanguage } from '../utils/language-filter';
-import { STAR } from '../utils/pixel-art';
+import { GITHUB, STAR } from '../utils/pixel-art';
 
 // Rendered on every request, so each visit reads the latest snapshot with one query.
 export const prerender = false;
@@ -42,7 +42,19 @@ if (snapshotDate) {
 				></span>
 			</p>
 		</div>
-		<ThemeToggle client:load />
+		<div class="flex shrink-0 gap-4">
+			<a
+				href="https://github.com/renans2/gh-ranking"
+				target="_blank"
+				rel="noopener noreferrer"
+				aria-label="Source code on GitHub"
+				title="Source code on GitHub"
+				class="pixel-frame pixel-press grid size-11 place-items-center bg-surface text-fg [--px:3px] hover:bg-hover"
+			>
+				<PixelIcon art={GITHUB} className="size-[22px]" />
+			</a>
+			<ThemeToggle client:load />
+		</div>
 	</header>
 	{
 		rows.length > 0 && (
