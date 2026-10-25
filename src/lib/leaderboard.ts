@@ -1,9 +1,16 @@
 import { RANKING_TABLES } from '../constants/rankings';
 import { supabase } from './supabase';
 
-export interface LeaderboardRow {
+/** Fields every leaderboard view has. */
+interface RankedRow {
 	rank: number;
 	id: number;
+	snapshot_date: string;
+	previous_date: string | null;
+	rank_change: number | null;
+}
+
+export interface LeaderboardRow extends RankedRow {
 	full_name: string;
 	html_url: string;
 	description: string | null;
@@ -11,14 +18,27 @@ export interface LeaderboardRow {
 	owner_avatar_url: string | null;
 	stars: number;
 	forks: number;
-	snapshot_date: string;
-	previous_date: string | null;
 	stars_change: number | null;
-	rank_change: number | null;
 }
 
-export async function getLeaderboard(): Promise<LeaderboardRow[]> {
-	const { data, error } = await supabase.from(RANKING_TABLES.repos.view).select('*').order('rank');
-	if (error) throw new Error(`Failed to load leaderboard: ${error.message}`);
+export interface UserLeaderboardRow extends RankedRow {
+	login: string;
+	name: string | null;
+	html_url: string;
+	avatar_url: string | null;
+	location: string | null;
+	followers: number;
+	followers_change: number | null;
+}
+
+async function getView<Row>(view: string): Promise<Row[]> {
+	const { data, error } = await supabase.from(view).select('*').order('rank');
+	if (error) throw new Error(`Failed to load ${view}: ${error.message}`);
 	return data;
 }
+
+/** The most-starred repos, from the latest snapshot. */
+export const getLeaderboard = () => getView<LeaderboardRow>(RANKING_TABLES.repos.view);
+
+/** The most-followed users, from the latest snapshot. */
+export const getUserLeaderboard = () => getView<UserLeaderboardRow>(RANKING_TABLES.users.view);

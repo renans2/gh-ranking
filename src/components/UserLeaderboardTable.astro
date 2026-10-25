@@ -1,0 +1,84 @@
+---
+import { USER } from '../constants/sprites';
+import { AVATAR_SIZE, num, td, th, wide } from '../constants/table';
+import type { UserLeaderboardRow } from '../lib/leaderboard';
+import { avatarUrl, changeClass, changeLabel, formatNumber } from '../utils/format';
+import PixelIcon from './PixelIcon';
+import RankCell from './RankCell.astro';
+
+interface Props {
+	rows: UserLeaderboardRow[];
+}
+
+const { rows } = Astro.props;
+---
+
+<div class="pixel-frame overflow-x-auto bg-surface">
+	<table class="w-full border-collapse text-xl leading-tight">
+		<thead class="bg-frame text-on-frame">
+			<tr class="text-left">
+				<th class:list={[th, 'text-center']}>#</th>
+				<th class={th}>User</th>
+				<th class:list={[th, wide, num]}>Followers</th>
+				<th class:list={[th, wide, num]}>Change</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				rows.map((row) => (
+					<tr class="group hover:bg-hover">
+						<RankCell row={row} />
+						<td class={td}>
+							<div class="flex items-center gap-4">
+								{row.avatar_url ? (
+									<img
+										src={avatarUrl(row.avatar_url, AVATAR_SIZE)}
+										alt=""
+										width="48"
+										height="48"
+										loading="lazy"
+										class="size-8 shrink-0 border-2 border-frame bg-canvas sm:size-12"
+									/>
+								) : (
+									<span class="size-8 shrink-0 sm:size-12" />
+								)}
+								<div class="min-w-0">
+									{/* Name and login wrap as whole pieces on narrow screens */}
+									<div class="flex flex-wrap items-baseline gap-x-2">
+										<a
+											href={row.html_url}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="text-2xl leading-none wrap-anywhere text-accent decoration-2 underline-offset-4 hover:underline"
+										>
+											{row.name ?? row.login}
+										</a>
+										{row.name && <span class="text-xl wrap-anywhere text-muted">@{row.login}</span>}
+									</div>
+									<div class="mt-1.5 flex items-center gap-3 sm:hidden">
+										<span class="inline-flex items-center gap-1.5">
+											<PixelIcon art={USER} className="size-[18px] text-accent" />
+											{formatNumber(row.followers)}
+										</span>
+										<span class:list={changeClass(row.followers_change)}>
+											{changeLabel(row.followers_change)}
+										</span>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td class:list={[td, wide, num]}>
+							<span class="inline-flex items-center gap-2">
+								{formatNumber(row.followers)}
+								<PixelIcon art={USER} className="size-[18px] text-accent" />
+							</span>
+						</td>
+						<td class:list={[td, wide, num, changeClass(row.followers_change)]}>
+							{changeLabel(row.followers_change)}
+						</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</div>

@@ -1,0 +1,23 @@
+---
+import PageHeader from '../components/PageHeader.astro';
+import UserLeaderboardTable from '../components/UserLeaderboardTable.astro';
+import { USER } from '../constants/sprites';
+import Layout from '../layouts/Layout.astro';
+import { getUserLeaderboard } from '../lib/leaderboard';
+
+// Rendered on every request, so each visit reads the latest snapshot with one query.
+export const prerender = false;
+
+const rows = await getUserLeaderboard();
+---
+
+<Layout title="GitHub Follower Ranking">
+	<PageHeader
+		title="GitHub Follower Ranking"
+		icon={USER}
+		iconColor="text-accent"
+		snapshotDate={rows[0]?.snapshot_date}
+		previousDate={rows[0]?.previous_date}
+	/>
+	{rows.length > 0 && <UserLeaderboardTable rows={rows} />}
+</Layout>

@@ -6,6 +6,7 @@ export const RANKING_SIZE = 100;
 /** Supabase tables and leaderboard view of each ranking (see supabase/migrations/). */
 export const RANKING_TABLES = {
 	repos: { items: 'repos', snapshots: 'repo_snapshots', foreignKey: 'repo_id', view: 'leaderboard' },
+	users: { items: 'users', snapshots: 'user_snapshots', foreignKey: 'user_id', view: 'user_leaderboard' },
 } as const;
 
 /** Query param that filters the repos ranking by language, as in `/?language=Rust`. */

@@ -1,17 +1,24 @@
-# GitHub Star Ranking
+# gh-ranking
 
-A table of the most-starred GitHub repos, with rank and star changes since the previous day.
+Daily rankings of GitHub, with rank and count changes since the previous day:
 
-- `scripts/sync.ts` fetches the top 100 repos from the GitHub search API and saves a daily snapshot to Supabase.
+- `/`: the 100 most-starred repos, filterable by language (`?language=`).
+- `/users`: the 100 most-followed users.
+
+How it works:
+
+- `scripts/sync.ts` saves a daily snapshot of each ranking to Supabase. Each ranking lives in
+  `scripts/sync/` (repos come from the REST search API, users from the GraphQL API).
 - `.github/workflows/sync.yml` runs the sync every day at 00:17 UTC.
-- `src/pages/index.astro` is rendered on every request (on Vercel): it reads the `leaderboard` view
-  and filters it by the `?language=` query param.
+- The pages are rendered on every request (on Vercel) from the `leaderboard` and
+  `user_leaderboard` views, one Supabase query per page.
 
 ## Setup
 
-1. Create a Supabase project and run `supabase/migrations/20261025000000_init.sql` in the SQL Editor
+1. Create a Supabase project and run the files in `supabase/migrations/` in order in the SQL Editor
    (or `supabase db push` with the Supabase CLI).
 2. Copy `.env.example` to `.env` and fill in the values from **Project Settings > API Keys**.
+   The users ranking needs a `GITHUB_TOKEN` (GitHub's GraphQL API requires one).
 3. Take the first snapshot and start the site:
 
    ```sh
@@ -29,8 +36,8 @@ Changes appear once there are snapshots from two different days.
 
 ## Commands
 
-| Command           | Action                                          |
-| :---------------- | :---------------------------------------------- |
-| `npm run dev`     | Start the dev server at `localhost:4321`        |
-| `npm run sync`    | Save today's snapshot (safe to re-run same day) |
-| `npm run build`   | Build for Vercel into `.vercel/output/`         |
+| Command           | Action                                           |
+| :---------------- | :----------------------------------------------- |
+| `npm run dev`     | Start the dev server at `localhost:4321`         |
+| `npm run sync`    | Save today's snapshots (safe to re-run same day) |
+| `npm run build`   | Build for Vercel into `.vercel/output/`          |

@@ -1,0 +1,60 @@
+---
+import { ARROW_DOWN, ARROW_RIGHT, ARROW_UP } from '../constants/sprites';
+import { td } from '../constants/table';
+import { rankChange } from '../utils/format';
+import PixelIcon from './PixelIcon';
+
+// The "#" cell of a leaderboard row: rank (with medals for the top 3) and how it moved
+// since the previous snapshot. Use it inside a <tr class="group"> for the hover cursor.
+
+interface Props {
+	row: { rank: number; previous_date: string | null; rank_change: number | null };
+}
+
+const { row } = Astro.props;
+const change = rankChange(row);
+
+const medalClass: Record<number, string> = {
+	1: 'bg-gold',
+	2: 'bg-silver',
+	3: 'bg-bronze',
+};
+
+const rankChangeClass = {
+	none: '',
+	new: 'text-accent',
+	up: 'text-up',
+	down: 'text-down',
+	same: 'text-muted',
+};
+---
+
+<td class:list={[td, 'relative pl-6 text-center']}>
+	{/* Game-menu style cursor on the hovered row */}
+	<PixelIcon
+		art={ARROW_RIGHT}
+		className="absolute top-1/2 left-2 h-[15px] w-[9px] -translate-y-1/2 text-accent opacity-0 group-hover:opacity-100"
+	/>
+	<span
+		class:list={[
+			'inline-grid min-w-9 place-items-center py-1.5 font-pixel text-xs',
+			medalClass[row.rank] && ['pixel-frame text-ink [--px:2px]', medalClass[row.rank]],
+		]}
+	>
+		{row.rank}
+	</span>
+	{
+		change.kind !== 'none' && (
+			<span
+				class:list={[
+					'mt-1.5 flex items-center justify-center gap-1 text-lg leading-none uppercase',
+					rankChangeClass[change.kind],
+				]}
+			>
+				{change.kind === 'up' && <PixelIcon art={ARROW_UP} className="h-[8px] w-[14px]" />}
+				{change.kind === 'down' && <PixelIcon art={ARROW_DOWN} className="h-[8px] w-[14px]" />}
+				{change.kind === 'new' ? 'new' : change.kind === 'same' ? '–' : change.amount}
+			</span>
+		)
+	}
+</td>

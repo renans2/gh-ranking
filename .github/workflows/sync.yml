@@ -1,4 +1,4 @@
-name: Daily star snapshot
+name: Daily snapshot
 
 on:
   schedule:

@@ -7,3 +7,8 @@ export const AUTHOR = {
 	url: 'https://github.com/renans2',
 };
 
+/** Pages in the site header's menu. */
+export const RANKING_PAGES = [
+	{ href: '/', label: 'Repos' },
+	{ href: '/users', label: 'Users' },
+];
