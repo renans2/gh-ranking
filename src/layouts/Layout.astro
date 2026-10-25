@@ -1,7 +1,8 @@
 ---
 import { Font } from 'astro:assets';
 import PixelIcon from '../components/PixelIcon';
-import { HEART } from '../utils/pixel-art';
+import ThemeToggle from '../components/ThemeToggle';
+import { GITHUB, HEART } from '../utils/pixel-art';
 import '../styles/global.css';
 
 interface Props {
@@ -18,7 +19,7 @@ const { title } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+		<title>{title} · gh-ranking</title>
 		<Font cssVariable="--font-press-start" preload />
 		<Font cssVariable="--font-vt323" preload />
 		<script is:inline>
@@ -36,7 +37,23 @@ const { title } = Astro.props;
 		</script>
 	</head>
 	<body class="min-h-screen font-sans text-xl text-fg">
-		<main class="mx-auto max-w-5xl px-4 py-10">
+		<header class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 pt-8">
+			<a href="/" class="font-pixel text-xs text-muted hover:text-accent">gh-ranking</a>
+			<div class="flex shrink-0 gap-4">
+				<a
+					href="https://github.com/renans2/gh-ranking"
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label="Source code on GitHub"
+					title="Source code on GitHub"
+					class="pixel-frame pixel-press grid size-11 place-items-center bg-surface text-fg [--px:3px] hover:bg-hover"
+				>
+					<PixelIcon art={GITHUB} className="size-[22px]" />
+				</a>
+				<ThemeToggle client:load />
+			</div>
+		</header>
+		<main class="mx-auto max-w-5xl px-4 pt-8 pb-10">
 			<slot />
 		</main>
 		<footer class="flex items-center justify-center gap-2 px-4 pb-10 text-xl text-muted">
