@@ -3,9 +3,9 @@ import LanguageFilter from '../components/LanguageFilter.astro';
 import LeaderboardTable from '../components/LeaderboardTable.astro';
 import PixelIcon from '../components/PixelIcon';
 import Layout from '../layouts/Layout.astro';
+import { STAR } from '../constants/sprites';
 import { getLeaderboard } from '../lib/leaderboard';
 import { selectedLanguage } from '../utils/language-filter';
-import { STAR } from '../utils/pixel-art';
 
 // Rendered on every request, so each visit reads the latest snapshot with one query.
 export const prerender = false;

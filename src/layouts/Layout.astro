@@ -2,7 +2,9 @@
 import { Font } from 'astro:assets';
 import PixelIcon from '../components/PixelIcon';
 import ThemeToggle from '../components/ThemeToggle';
-import { GITHUB, HEART } from '../utils/pixel-art';
+import { AUTHOR, REPO_URL, SITE_NAME } from '../constants/site';
+import { GITHUB, HEART } from '../constants/sprites';
+import { THEME_STORAGE_KEY } from '../constants/theme';
 import '../styles/global.css';
 
 interface Props {
@@ -19,29 +21,27 @@ const { title } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title} · gh-ranking</title>
+		<title>{title} · {SITE_NAME}</title>
 		<Font cssVariable="--font-press-start" preload />
 		<Font cssVariable="--font-vt323" preload />
-		<script is:inline>
+		<script is:inline define:vars={{ storageKey: THEME_STORAGE_KEY }}>
 			// Runs before first paint so the page never flashes the wrong theme.
-			(() => {
-				let theme;
-				try {
-					theme = localStorage.getItem('theme');
-				} catch {}
-				if (theme !== 'light' && theme !== 'dark') {
-					theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-				}
-				document.documentElement.dataset.theme = theme;
-			})();
+			let theme;
+			try {
+				theme = localStorage.getItem(storageKey);
+			} catch {}
+			if (theme !== 'light' && theme !== 'dark') {
+				theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			}
+			document.documentElement.dataset.theme = theme;
 		</script>
 	</head>
 	<body class="min-h-screen font-sans text-xl text-fg">
 		<header class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 pt-8">
-			<a href="/" class="font-pixel text-xs text-muted hover:text-accent">gh-ranking</a>
+			<a href="/" class="font-pixel text-xs text-muted hover:text-accent">{SITE_NAME}</a>
 			<div class="flex shrink-0 gap-4">
 				<a
-					href="https://github.com/renans2/gh-ranking"
+					href={REPO_URL}
 					target="_blank"
 					rel="noopener noreferrer"
 					aria-label="Source code on GitHub"
@@ -62,10 +62,10 @@ const { title } = Astro.props;
 			<span class="sr-only">love</span>
 			by
 			<a
-				href="https://github.com/renans2"
+				href={AUTHOR.url}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="text-accent decoration-2 underline-offset-4 hover:underline">renans2</a
+				class="text-accent decoration-2 underline-offset-4 hover:underline">{AUTHOR.login}</a
 			>
 		</footer>
 	</body>

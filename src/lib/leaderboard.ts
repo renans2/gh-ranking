@@ -1,3 +1,4 @@
+import { RANKING_TABLES } from '../constants/rankings';
 import { supabase } from './supabase';
 
 export interface LeaderboardRow {
@@ -17,7 +18,7 @@ export interface LeaderboardRow {
 }
 
 export async function getLeaderboard(): Promise<LeaderboardRow[]> {
-	const { data, error } = await supabase.from('leaderboard').select('*').order('rank');
+	const { data, error } = await supabase.from(RANKING_TABLES.repos.view).select('*').order('rank');
 	if (error) throw new Error(`Failed to load leaderboard: ${error.message}`);
 	return data;
 }

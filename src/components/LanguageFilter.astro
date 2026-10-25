@@ -1,7 +1,8 @@
 ---
+import { LANGUAGE_PARAM } from '../constants/rankings';
+import { STAR } from '../constants/sprites';
 import type { LeaderboardRow } from '../lib/leaderboard';
 import { languageIconSvg } from '../utils/languages';
-import { STAR } from '../utils/pixel-art';
 import PixelIcon from './PixelIcon';
 
 interface Props {
@@ -40,7 +41,7 @@ const button =
 			return (
 				// Clicking the selected language again goes back to all languages.
 				<a
-					href={active ? allHref : `?${new URLSearchParams({ language })}`}
+					href={active ? allHref : `?${new URLSearchParams({ [LANGUAGE_PARAM]: language })}`}
 					data-language={language}
 					aria-current={active ? 'page' : undefined}
 					title={active ? 'Show all languages' : undefined}
@@ -55,6 +56,7 @@ const button =
 </nav>
 
 <script>
+	import { LANGUAGE_PARAM } from '../constants/rankings';
 	import { matchesLanguage, selectedLanguage } from '../utils/language-filter';
 
 	// The server renders the first view; after that, clicks filter the rows in place
@@ -71,7 +73,7 @@ const button =
 			if (active) link.setAttribute('aria-current', 'page');
 			else link.removeAttribute('aria-current');
 			if (!language) continue;
-			link.href = active ? location.pathname : `?${new URLSearchParams({ language })}`;
+			link.href = active ? location.pathname : `?${new URLSearchParams({ [LANGUAGE_PARAM]: language })}`;
 			if (active) link.title = 'Show all languages';
 			else link.removeAttribute('title');
 		}

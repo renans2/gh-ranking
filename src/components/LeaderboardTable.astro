@@ -1,8 +1,9 @@
 ---
+import { ARROW_DOWN, ARROW_RIGHT, ARROW_UP, FORK, STAR } from '../constants/sprites';
+import { AVATAR_SIZE, num, td, th, wide } from '../constants/table';
 import type { LeaderboardRow } from '../lib/leaderboard';
 import { avatarUrl, formatNumber, rankChange, starsLabel } from '../utils/format';
 import { matchesLanguage } from '../utils/language-filter';
-import { ARROW_DOWN, ARROW_RIGHT, ARROW_UP, FORK, STAR } from '../utils/pixel-art';
 import LanguageIcon from './LanguageIcon.astro';
 import PixelIcon from './PixelIcon';
 
@@ -28,12 +29,6 @@ const rankChangeClass = {
 	down: 'text-down',
 	same: 'text-muted',
 };
-
-const th = 'px-3 py-3 font-pixel text-[10px] font-normal whitespace-nowrap uppercase';
-const td = 'border-b-2 border-dashed border-line px-3 py-3 align-middle';
-const num = 'text-right whitespace-nowrap';
-// Columns that only fit on wider screens; phones show stars under the repo name instead.
-const wide = 'hidden sm:table-cell';
 ---
 
 <div class="pixel-frame overflow-x-auto bg-surface">
@@ -91,7 +86,7 @@ const wide = 'hidden sm:table-cell';
 							<div class="flex items-center gap-4">
 								{row.owner_avatar_url ? (
 									<img
-										src={avatarUrl(row.owner_avatar_url, 96)}
+										src={avatarUrl(row.owner_avatar_url, AVATAR_SIZE)}
 										alt=""
 										width="48"
 										height="48"

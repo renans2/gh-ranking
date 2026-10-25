@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { MOON, SUN } from '../utils/pixel-art';
+import { MOON, SUN } from '../constants/sprites';
+import { THEME_STORAGE_KEY } from '../constants/theme';
 import PixelIcon from './PixelIcon';
 
 type Theme = 'light' | 'dark';
 
 function savedTheme() {
 	try {
-		return localStorage.getItem('theme');
+		return localStorage.getItem(THEME_STORAGE_KEY);
 	} catch {
 		return null;
 	}
@@ -37,7 +38,7 @@ export default function ThemeToggle() {
 		const next = theme === 'dark' ? 'light' : 'dark';
 		setTheme(next);
 		try {
-			localStorage.setItem('theme', next);
+			localStorage.setItem(THEME_STORAGE_KEY, next);
 		} catch {}
 	}
 
