@@ -94,11 +94,13 @@ body {
 		calc(var(--px, 4px) * 2) var(--px, 4px) 0 0 var(--drop);
 }
 
-/* Pairs with pixel-frame: the element sinks into its shadow while pressed. */
+/* Pairs with pixel-frame: the element sinks into its shadow while pressed, and stays
+   sunk while it's the current page (like a selected filter). */
 @utility pixel-press {
 	cursor: pointer;
 
-	&:active {
+	&:active,
+	&[aria-current='page'] {
 		translate: var(--px, 4px) var(--px, 4px);
 		box-shadow:
 			0 calc(var(--px, 4px) * -1) 0 0 var(--frame),

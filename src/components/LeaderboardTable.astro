@@ -138,6 +138,15 @@ const wide = 'hidden sm:table-cell';
 					</tr>
 				);
 			})}
+			{
+				rows.length === 0 && (
+					<tr>
+						<td colspan="6" class="px-3 py-8 text-center text-muted">
+							No repos in this language right now.
+						</td>
+					</tr>
+				)
+			}
 		</tbody>
 	</table>
 </div>

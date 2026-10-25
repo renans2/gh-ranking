@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^7.1.1",
+    "@astrojs/vercel": "^11.0.16",
     "@iconify-json/devicon": "^1.2.71",
     "@iconify/utils": "^3.1.7",
     "@supabase/supabase-js": "^2.118.0",

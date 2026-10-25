@@ -4,7 +4,8 @@ A table of the most-starred GitHub repos, with rank and star changes since the p
 
 - `scripts/sync.ts` fetches the top 100 repos from the GitHub search API and saves a daily snapshot to Supabase.
 - `.github/workflows/sync.yml` runs the sync every day at 00:17 UTC.
-- `src/pages/index.astro` reads the `leaderboard` view and renders the table.
+- `src/pages/index.astro` is rendered on every request (on Vercel): it reads the `leaderboard` view
+  and filters it by the `?language=` query param.
 
 ## Setup
 
@@ -21,6 +22,8 @@ A table of the most-starred GitHub repos, with rank and star changes since the p
 
 4. Push to GitHub and add the `SUPABASE_URL` and `SUPABASE_SECRET_KEY` repository secrets
    (**Settings > Secrets and variables > Actions**) so the daily workflow can run.
+5. Import the repo in Vercel and add the `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`
+   environment variables (**Project Settings > Environment Variables**). Vercel deploys on every push.
 
 Changes appear once there are snapshots from two different days.
 
@@ -30,5 +33,4 @@ Changes appear once there are snapshots from two different days.
 | :---------------- | :---------------------------------------------- |
 | `npm run dev`     | Start the dev server at `localhost:4321`        |
 | `npm run sync`    | Save today's snapshot (safe to re-run same day) |
-| `npm run build`   | Build the site to `./dist/`                     |
-| `npm run preview` | Preview the build locally                       |
+| `npm run build`   | Build for Vercel into `.vercel/output/`         |

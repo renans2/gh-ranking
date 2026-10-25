@@ -1,0 +1,53 @@
+---
+import type { LeaderboardRow } from '../lib/leaderboard';
+import { languageIconSvg } from '../utils/languages';
+import { STAR } from '../utils/pixel-art';
+import PixelIcon from './PixelIcon';
+
+interface Props {
+	rows: LeaderboardRow[];
+	/** The ?language= value, lowercased, or null when showing all languages. */
+	selected: string | null;
+}
+
+const { rows, selected } = Astro.props;
+
+// One button per language in the ranking, most common first.
+const counts = new Map<string, number>();
+for (const { language } of rows) {
+	if (language) counts.set(language, (counts.get(language) ?? 0) + 1);
+}
+const languages = [...counts.keys()].sort((a, b) => counts.get(b)! - counts.get(a)! || a.localeCompare(b));
+
+const allHref = Astro.url.pathname;
+const button =
+	'pixel-frame pixel-press inline-flex shrink-0 items-center gap-2 bg-surface px-3 py-1 text-xl whitespace-nowrap [--px:2px] hover:bg-hover aria-[current=page]:bg-frame aria-[current=page]:text-on-frame';
+---
+
+<nav
+	aria-label="Filter by language"
+	class="-mx-4 mb-8 flex gap-4 overflow-x-auto px-4 pt-1 pb-3 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-1"
+>
+	<a href={allHref} aria-current={selected === null ? 'page' : undefined} class={button}>
+		<PixelIcon art={STAR} className="size-[18px] text-star" />
+		All
+	</a>
+	{
+		languages.map((language) => {
+			const active = language.toLowerCase() === selected;
+			const svg = languageIconSvg(language, 20);
+			return (
+				// Clicking the selected language again goes back to all languages.
+				<a
+					href={active ? allHref : `?${new URLSearchParams({ language })}`}
+					aria-current={active ? 'page' : undefined}
+					title={active ? 'Show all languages' : undefined}
+					class={button}
+				>
+					{svg && <Fragment set:html={svg} />}
+					{language}
+				</a>
+			);
+		})
+	}
+</nav>
