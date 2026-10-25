@@ -1,0 +1,54 @@
+---
+import type { LeaderboardRow } from '../lib/leaderboard';
+import { avatarUrl, formatCompact, formatNumber, rankLabel, starsLabel } from '../utils/format';
+import '../styles/leaderboard-table.css';
+
+interface Props {
+	rows: LeaderboardRow[];
+}
+
+const { rows } = Astro.props;
+---
+
+<div class="table-wrap">
+	<table>
+		<thead>
+			<tr>
+				<th class="num">#</th>
+				<th>Repository</th>
+				<th>Language</th>
+				<th class="num">Stars</th>
+				<th class="num">Change</th>
+				<th class="num">Forks</th>
+			</tr>
+		</thead>
+		<tbody>
+			{rows.map((row) => {
+				const rank = rankLabel(row);
+				return (
+					<tr>
+						<td class="num">
+							<span class="rank">{row.rank}</span>
+							<span class:list={['rank-change', rank.kind]}>{rank.text}</span>
+						</td>
+						<td class="repo">
+							<a href={row.html_url} target="_blank" rel="noopener noreferrer">
+								{row.owner_avatar_url && (
+									<img src={avatarUrl(row.owner_avatar_url)} alt="" width="24" height="24" loading="lazy" />
+								)}
+								{row.full_name}
+							</a>
+							{row.description && <p>{row.description}</p>}
+						</td>
+						<td>{row.language ?? '—'}</td>
+						<td class="num" title={formatNumber(row.stars)}>{formatCompact(row.stars)}</td>
+						<td class:list={['num', { up: (row.stars_change ?? 0) > 0, down: (row.stars_change ?? 0) < 0 }]}>
+							{starsLabel(row.stars_change)}
+						</td>
+						<td class="num" title={formatNumber(row.forks)}>{formatCompact(row.forks)}</td>
+					</tr>
+				);
+			})}
+		</tbody>
+	</table>
+</div>

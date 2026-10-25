@@ -1,0 +1,70 @@
+.table-wrap {
+	overflow-x: auto;
+}
+table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.9375rem;
+}
+th,
+td {
+	padding: 0.625rem 0.75rem;
+	border-bottom: 1px solid var(--border);
+	text-align: left;
+	vertical-align: top;
+}
+th {
+	color: var(--muted);
+	font-weight: 600;
+	white-space: nowrap;
+}
+tbody tr:hover {
+	background: var(--row-hover);
+}
+.num {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+.rank {
+	font-weight: 600;
+}
+.rank-change {
+	display: block;
+	font-size: 0.75rem;
+	color: var(--muted);
+}
+.rank-change.new {
+	color: var(--accent);
+	text-transform: uppercase;
+}
+.up {
+	color: var(--up);
+}
+.down {
+	color: var(--down);
+}
+.repo a {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	color: var(--accent);
+	font-weight: 600;
+	text-decoration: none;
+}
+.repo a:hover {
+	text-decoration: underline;
+}
+.repo img {
+	border-radius: 50%;
+}
+.repo p {
+	margin: 0.25rem 0 0;
+	color: var(--muted);
+	font-size: 0.875rem;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
