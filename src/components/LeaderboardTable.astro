@@ -81,15 +81,14 @@ const wide = 'hidden sm:table-cell';
 						</td>
 						<td class={td}>
 							<div class="flex items-center gap-4">
-								{/* A 16px avatar scaled up 2x or 3x, so it reads as pixel art */}
 								{row.owner_avatar_url ? (
 									<img
-										src={avatarUrl(row.owner_avatar_url, 64)}
+										src={avatarUrl(row.owner_avatar_url, 96)}
 										alt=""
 										width="48"
 										height="48"
 										loading="lazy"
-										class="size-8 shrink-0 border-2 border-frame bg-canvas [image-rendering:pixelated] sm:size-12"
+										class="size-8 shrink-0 border-2 border-frame bg-canvas sm:size-12"
 									/>
 								) : (
 									<span class="size-8 shrink-0 sm:size-12" />
