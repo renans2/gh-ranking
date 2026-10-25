@@ -1,7 +1,9 @@
 ---
 import type { LeaderboardRow } from '../lib/leaderboard';
-import { avatarUrl, formatNumber, rankLabel, starsLabel } from '../utils/format';
+import { avatarUrl, formatNumber, rankChange, starsLabel } from '../utils/format';
+import { ARROW_DOWN, ARROW_RIGHT, ARROW_UP, FORK, STAR } from '../utils/pixel-art';
 import LanguageIcon from './LanguageIcon.astro';
+import PixelIcon from './PixelIcon';
 
 interface Props {
 	rows: LeaderboardRow[];
@@ -9,74 +11,131 @@ interface Props {
 
 const { rows } = Astro.props;
 
+const medalClass: Record<number, string> = {
+	1: 'bg-gold',
+	2: 'bg-silver',
+	3: 'bg-bronze',
+};
+
 const rankChangeClass = {
 	none: '',
-	new: 'text-accent uppercase',
+	new: 'text-accent',
 	up: 'text-up',
 	down: 'text-down',
 	same: 'text-muted',
 };
 
-const th = 'border-b border-line px-3 py-2.5 font-semibold whitespace-nowrap text-muted';
-const td = 'border-b border-line px-3 py-2.5 align-middle';
-const num = 'text-right tabular-nums whitespace-nowrap';
+const th = 'px-3 py-3 font-pixel text-[10px] font-normal whitespace-nowrap uppercase';
+const td = 'border-b-2 border-dashed border-line px-3 py-3 align-middle';
+const num = 'text-right whitespace-nowrap';
+// Columns that only fit on wider screens; phones show stars under the repo name instead.
+const wide = 'hidden sm:table-cell';
 ---
 
-<div class="overflow-x-auto">
-	<table class="w-full border-collapse text-[0.9375rem]">
-		<thead>
+<div class="pixel-frame overflow-x-auto bg-surface">
+	<table class="w-full border-collapse text-xl leading-tight">
+		<thead class="bg-frame text-on-frame">
 			<tr class="text-left">
-				<th class:list={[th, num]}>#</th>
+				<th class:list={[th, 'text-center']}>#</th>
 				<th class={th}>Repository</th>
-				<th class:list={[th, 'text-center']}>Language</th>
-				<th class:list={[th, num]}>Stars</th>
-				<th class:list={[th, num]}>Change</th>
-				<th class:list={[th, num]}>Forks</th>
+				<th class:list={[th, wide, 'text-center']}>Lang</th>
+				<th class:list={[th, wide, num]}>Stars</th>
+				<th class:list={[th, wide, num]}>Change</th>
+				<th class:list={[th, wide, num]}>Forks</th>
 			</tr>
 		</thead>
 		<tbody>
 			{rows.map((row) => {
-				const rank = rankLabel(row);
-				const change = row.stars_change ?? 0;
+				const change = rankChange(row);
+				const starsDelta = row.stars_change ?? 0;
+				const starsDeltaClass = { 'text-up': starsDelta > 0, 'text-down': starsDelta < 0 };
+				const [owner, name] = row.full_name.split('/');
 				return (
-					<tr class="hover:bg-hover">
-						<td class:list={[td, num]}>
-							<span class="font-semibold">{row.rank}</span>
-							<span class:list={['block text-xs', rankChangeClass[rank.kind]]}>{rank.text}</span>
+					<tr class="group hover:bg-hover">
+						<td class:list={[td, 'relative pl-6 text-center']}>
+							{/* Game-menu style cursor on the hovered row */}
+							<PixelIcon
+								art={ARROW_RIGHT}
+								className="absolute top-1/2 left-2 h-[15px] w-[9px] -translate-y-1/2 text-accent opacity-0 group-hover:opacity-100"
+							/>
+							<span
+								class:list={[
+									'inline-grid min-w-9 place-items-center py-1.5 font-pixel text-xs',
+									medalClass[row.rank] && ['pixel-frame text-ink [--px:2px]', medalClass[row.rank]],
+								]}
+							>
+								{row.rank}
+							</span>
+							{change.kind !== 'none' && (
+								<span
+									class:list={[
+										'mt-1.5 flex items-center justify-center gap-1 text-lg leading-none uppercase',
+										rankChangeClass[change.kind],
+									]}
+								>
+									{change.kind === 'up' && <PixelIcon art={ARROW_UP} className="h-[8px] w-[14px]" />}
+									{change.kind === 'down' && <PixelIcon art={ARROW_DOWN} className="h-[8px] w-[14px]" />}
+									{change.kind === 'new' ? 'new' : change.kind === 'same' ? '–' : change.amount}
+								</span>
+							)}
 						</td>
 						<td class={td}>
 							<div class="flex items-center gap-4">
-								{row.owner_avatar_url && (
-										<img
-											src={avatarUrl(row.owner_avatar_url)}
-											alt=""
-											width="44"
-											height="34"
-											loading="lazy"
-											class="rounded-full"
-										/>
-									)}
-								<div>
+								{/* A 16px avatar scaled up 2x or 3x, so it reads as pixel art */}
+								{row.owner_avatar_url ? (
+									<img
+										src={avatarUrl(row.owner_avatar_url, 64)}
+										alt=""
+										width="48"
+										height="48"
+										loading="lazy"
+										class="size-8 shrink-0 border-2 border-frame bg-canvas [image-rendering:pixelated] sm:size-12"
+									/>
+								) : (
+									<span class="size-8 shrink-0 sm:size-12" />
+								)}
+								<div class="min-w-0">
 									<a
 										href={row.html_url}
 										target="_blank"
 										rel="noopener noreferrer"
-										class="inline-flex items-center gap-2 font-semibold text-accent hover:underline"
+										class="text-2xl leading-none wrap-anywhere text-accent decoration-2 underline-offset-4 hover:underline"
 									>
-										{row.full_name}
+										<span class="text-muted">{owner}/</span>
+										<wbr />
+										{name}
 									</a>
-									{row.description && <p class="mt-1 line-clamp-2 text-sm text-muted">{row.description}</p>}
+									{row.description && (
+										<p class="mt-1 line-clamp-2 text-xl leading-tight wrap-anywhere text-muted">{row.description}</p>
+									)}
+									<div class="mt-1.5 flex items-center gap-3 sm:hidden">
+										<span class="inline-flex items-center gap-1.5">
+											<PixelIcon art={STAR} className="size-[18px] text-star" />
+											{formatNumber(row.stars)}
+										</span>
+										<span class:list={starsDeltaClass}>{starsLabel(row.stars_change)}</span>
+									</div>
 								</div>
 							</div>
 						</td>
-						<td class:list={[td, 'text-center']}>
+						<td class:list={[td, wide, 'text-center']}>
 							<LanguageIcon language={row.language} />
 						</td>
-						<td class:list={[td, num]}>{formatNumber(row.stars)}</td>
-						<td class:list={[td, num, { 'text-up': change > 0, 'text-down': change < 0 }]}>
+						<td class:list={[td, wide, num]}>
+							<span class="inline-flex items-center gap-2">
+								{formatNumber(row.stars)}
+								<PixelIcon art={STAR} className="size-[18px] text-star" />
+							</span>
+						</td>
+						<td class:list={[td, wide, num, starsDeltaClass]}>
 							{starsLabel(row.stars_change)}
 						</td>
-						<td class:list={[td, num]}>{formatNumber(row.forks)}</td>
+						<td class:list={[td, wide, num]}>
+							<span class="inline-flex items-center gap-2">
+								{formatNumber(row.forks)}
+								<PixelIcon art={FORK} className="size-[18px] text-muted" />
+							</span>
+						</td>
 					</tr>
 				);
 			})}

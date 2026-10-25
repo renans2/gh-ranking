@@ -13,8 +13,9 @@ const icon = language ? getIconData(icons, languageIconName(language)) : null;
 let svg: string | null = null;
 if (language && icon) {
 	const { attributes, body } = iconToSVG(icon, { height: 30 });
-	// Black icons (Rust, Markdown, ...) would vanish in dark mode, so draw them in the text color.
-	const themedBody = replaceIDs(body).replace(/#000(000)?\b/g, 'currentColor');
+	// Black and near-black parts (Rust, Markdown, Shell, ...) would vanish in dark mode,
+	// so draw them in the text color.
+	const themedBody = replaceIDs(body).replace(/#000(000)?\b|#293138\b/gi, 'currentColor');
 	svg = iconToHTML(themedBody, { ...attributes, fill: 'currentColor', role: 'img', 'aria-label': language });
 }
 ---

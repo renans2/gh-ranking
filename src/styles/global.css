@@ -3,37 +3,107 @@
 /* The theme is set on <html data-theme> by the script in Layout.astro. */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
+/* Fonts are loaded by the Astro Fonts API (see astro.config.mjs). */
 @theme inline {
+	--font-sans: var(--font-vt323);
+	--font-pixel: var(--font-press-start);
+
 	--color-canvas: var(--canvas);
+	--color-surface: var(--surface);
 	--color-fg: var(--fg);
 	--color-muted: var(--muted);
 	--color-line: var(--line);
+	--color-frame: var(--frame);
+	--color-on-frame: var(--on-frame);
 	--color-hover: var(--hover);
 	--color-up: var(--up);
 	--color-down: var(--down);
 	--color-accent: var(--accent);
+	--color-star: var(--star);
 }
 
+@theme {
+	/* Medal colors are the same in both themes, so their text is always dark. */
+	--color-ink: #1a1c2c;
+	--color-gold: #ffcd75;
+	--color-silver: #c2d3df;
+	--color-bronze: #ef7d57;
+
+	--animate-blink: blink 1s steps(1) infinite;
+
+	@keyframes blink {
+		50% {
+			opacity: 0;
+		}
+	}
+}
+
+/* Colors from the Sweetie 16 palette, darkened where text needs more contrast. */
 :root {
 	color-scheme: light;
-	--canvas: #ffffff;
-	--fg: #1f2328;
-	--muted: #59636e;
-	--line: #d1d9e0;
-	--hover: #f6f8fa;
-	--up: #1a7f37;
-	--down: #cf222e;
-	--accent: #0969da;
+	--canvas: #f4f4f4;
+	--grid: #d3dbe2;
+	--surface: #ffffff;
+	--fg: #1a1c2c;
+	--muted: #566c86;
+	--line: #c2ced8;
+	--frame: #1a1c2c;
+	--on-frame: #f4f4f4;
+	--drop: #3b5dc9;
+	--hover: #fff3d4;
+	--up: #1f7a3f;
+	--down: #b13e53;
+	--accent: #3b5dc9;
+	--star: #f0a830;
 }
 
 [data-theme='dark'] {
 	color-scheme: dark;
-	--canvas: #0d1117;
-	--fg: #f0f6fc;
-	--muted: #9198a1;
-	--line: #3d444d;
-	--hover: #151b23;
-	--up: #3fb950;
-	--down: #f85149;
-	--accent: #4493f8;
+	--canvas: #1a1c2c;
+	--grid: #2b2f47;
+	--surface: #22253a;
+	--fg: #f4f4f4;
+	--muted: #94b0c2;
+	--line: #3a4260;
+	--frame: #94b0c2;
+	--on-frame: #1a1c2c;
+	--drop: #3b5dc9;
+	--hover: #2d3150;
+	--up: #a7f070;
+	--down: #ef7d57;
+	--accent: #73eff7;
+	--star: #ffcd75;
+}
+
+body {
+	background-color: var(--canvas);
+	/* A 2px dot every 16px, like a pixel grid. */
+	background-image: conic-gradient(at 2px 2px, transparent 75%, var(--grid) 0);
+	background-size: 16px 16px;
+	-webkit-font-smoothing: none;
+}
+
+/* Border with notched pixel corners plus a hard drop shadow; --px sets the pixel size. */
+@utility pixel-frame {
+	box-shadow:
+		0 calc(var(--px, 4px) * -1) 0 0 var(--frame),
+		0 var(--px, 4px) 0 0 var(--frame),
+		calc(var(--px, 4px) * -1) 0 0 0 var(--frame),
+		var(--px, 4px) 0 0 0 var(--frame),
+		var(--px, 4px) calc(var(--px, 4px) * 2) 0 0 var(--drop),
+		calc(var(--px, 4px) * 2) var(--px, 4px) 0 0 var(--drop);
+}
+
+/* Pairs with pixel-frame: the element sinks into its shadow while pressed. */
+@utility pixel-press {
+	cursor: pointer;
+
+	&:active {
+		translate: var(--px, 4px) var(--px, 4px);
+		box-shadow:
+			0 calc(var(--px, 4px) * -1) 0 0 var(--frame),
+			0 var(--px, 4px) 0 0 var(--frame),
+			calc(var(--px, 4px) * -1) 0 0 0 var(--frame),
+			var(--px, 4px) 0 0 0 var(--frame);
+	}
 }
