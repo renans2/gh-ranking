@@ -13,8 +13,12 @@
     "sync": "node --env-file-if-exists=.env scripts/sync.ts"
   },
   "dependencies": {
+    "@iconify-json/devicon": "^1.2.71",
+    "@iconify/utils": "^3.1.7",
     "@supabase/supabase-js": "^2.118.0",
-    "astro": "^7.4.2"
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.4.2",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@types/node": "^24.19.2"

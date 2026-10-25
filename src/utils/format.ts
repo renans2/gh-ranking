@@ -1,17 +1,15 @@
 import type { LeaderboardRow } from '../lib/leaderboard';
 
 const number = new Intl.NumberFormat('en-US');
-const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
 
 export const formatNumber = (value: number) => number.format(value);
-export const formatCompact = (value: number) => compact.format(value);
 
 export function rankLabel(row: LeaderboardRow) {
-	if (!row.previous_date) return { text: '', kind: 'none' };
-	if (row.rank_change === null) return { text: 'new', kind: 'new' };
-	if (row.rank_change > 0) return { text: `▲ ${row.rank_change}`, kind: 'up' };
-	if (row.rank_change < 0) return { text: `▼ ${-row.rank_change}`, kind: 'down' };
-	return { text: '–', kind: 'same' };
+	if (!row.previous_date) return { text: '', kind: 'none' } as const;
+	if (row.rank_change === null) return { text: 'new', kind: 'new' } as const;
+	if (row.rank_change > 0) return { text: `▲ ${row.rank_change}`, kind: 'up' } as const;
+	if (row.rank_change < 0) return { text: `▼ ${-row.rank_change}`, kind: 'down' } as const;
+	return { text: '–', kind: 'same' } as const;
 }
 
 export function starsLabel(change: number | null) {

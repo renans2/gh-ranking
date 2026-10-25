@@ -1,51 +1,82 @@
 ---
 import type { LeaderboardRow } from '../lib/leaderboard';
-import { avatarUrl, formatCompact, formatNumber, rankLabel, starsLabel } from '../utils/format';
-import '../styles/leaderboard-table.css';
+import { avatarUrl, formatNumber, rankLabel, starsLabel } from '../utils/format';
+import LanguageIcon from './LanguageIcon.astro';
 
 interface Props {
 	rows: LeaderboardRow[];
 }
 
 const { rows } = Astro.props;
+
+const rankChangeClass = {
+	none: '',
+	new: 'text-accent uppercase',
+	up: 'text-up',
+	down: 'text-down',
+	same: 'text-muted',
+};
+
+const th = 'border-b border-line px-3 py-2.5 font-semibold whitespace-nowrap text-muted';
+const td = 'border-b border-line px-3 py-2.5 align-middle';
+const num = 'text-right tabular-nums whitespace-nowrap';
 ---
 
-<div class="table-wrap">
-	<table>
+<div class="overflow-x-auto">
+	<table class="w-full border-collapse text-[0.9375rem]">
 		<thead>
-			<tr>
-				<th class="num">#</th>
-				<th>Repository</th>
-				<th>Language</th>
-				<th class="num">Stars</th>
-				<th class="num">Change</th>
-				<th class="num">Forks</th>
+			<tr class="text-left">
+				<th class:list={[th, num]}>#</th>
+				<th class={th}>Repository</th>
+				<th class:list={[th, 'text-center']}>Language</th>
+				<th class:list={[th, num]}>Stars</th>
+				<th class:list={[th, num]}>Change</th>
+				<th class:list={[th, num]}>Forks</th>
 			</tr>
 		</thead>
 		<tbody>
 			{rows.map((row) => {
 				const rank = rankLabel(row);
+				const change = row.stars_change ?? 0;
 				return (
-					<tr>
-						<td class="num">
-							<span class="rank">{row.rank}</span>
-							<span class:list={['rank-change', rank.kind]}>{rank.text}</span>
+					<tr class="hover:bg-hover">
+						<td class:list={[td, num]}>
+							<span class="font-semibold">{row.rank}</span>
+							<span class:list={['block text-xs', rankChangeClass[rank.kind]]}>{rank.text}</span>
 						</td>
-						<td class="repo">
-							<a href={row.html_url} target="_blank" rel="noopener noreferrer">
+						<td class={td}>
+							<div class="flex items-center gap-4">
 								{row.owner_avatar_url && (
-									<img src={avatarUrl(row.owner_avatar_url)} alt="" width="24" height="24" loading="lazy" />
-								)}
-								{row.full_name}
-							</a>
-							{row.description && <p>{row.description}</p>}
+										<img
+											src={avatarUrl(row.owner_avatar_url)}
+											alt=""
+											width="44"
+											height="34"
+											loading="lazy"
+											class="rounded-full"
+										/>
+									)}
+								<div>
+									<a
+										href={row.html_url}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="inline-flex items-center gap-2 font-semibold text-accent hover:underline"
+									>
+										{row.full_name}
+									</a>
+									{row.description && <p class="mt-1 line-clamp-2 text-sm text-muted">{row.description}</p>}
+								</div>
+							</div>
 						</td>
-						<td>{row.language ?? '—'}</td>
-						<td class="num" title={formatNumber(row.stars)}>{formatCompact(row.stars)}</td>
-						<td class:list={['num', { up: (row.stars_change ?? 0) > 0, down: (row.stars_change ?? 0) < 0 }]}>
+						<td class:list={[td, 'text-center']}>
+							<LanguageIcon language={row.language} />
+						</td>
+						<td class:list={[td, num]}>{formatNumber(row.stars)}</td>
+						<td class:list={[td, num, { 'text-up': change > 0, 'text-down': change < 0 }]}>
 							{starsLabel(row.stars_change)}
 						</td>
-						<td class="num" title={formatNumber(row.forks)}>{formatCompact(row.forks)}</td>
+						<td class:list={[td, num]}>{formatNumber(row.forks)}</td>
 					</tr>
 				);
 			})}

@@ -9,15 +9,15 @@ const previousDate = rows[0]?.previous_date;
 ---
 
 <Layout title="GitHub Star Ranking">
-	<h1>Most-starred GitHub repos</h1>
+	<h1 class="mb-1 text-[1.75rem] font-bold">Most-starred GitHub repos</h1>
 	{
 		snapshotDate ? (
-			<p class="meta">
+			<p class="mb-6 text-muted">
 				Snapshot from {snapshotDate}
 				{previousDate ? `, changes compared with ${previousDate}` : ', no earlier snapshot to compare with yet'}
 			</p>
 		) : (
-			<p class="meta">No snapshots yet. Run <code>npm run sync</code> to take the first one.</p>
+			<p class="mb-6 text-muted">No snapshots yet. Run <code>npm run sync</code> to take the first one.</p>
 		)
 	}
 	{rows.length > 0 && <LeaderboardTable rows={rows} />}

@@ -1,0 +1,28 @@
+---
+import { icons } from '@iconify-json/devicon';
+import { getIconData, iconToHTML, iconToSVG, replaceIDs } from '@iconify/utils';
+import { languageIconName } from '../utils/languages';
+
+interface Props {
+	language: string | null;
+}
+
+const { language } = Astro.props;
+const icon = language ? getIconData(icons, languageIconName(language)) : null;
+
+let svg: string | null = null;
+if (language && icon) {
+	const { attributes, body } = iconToSVG(icon, { height: 30 });
+	// Black icons (Rust, Markdown, ...) would vanish in dark mode, so draw them in the text color.
+	const themedBody = replaceIDs(body).replace(/#000(000)?\b/g, 'currentColor');
+	svg = iconToHTML(themedBody, { ...attributes, fill: 'currentColor', role: 'img', 'aria-label': language });
+}
+---
+
+{
+	svg ? (
+		<span class="inline-flex align-middle" title={language} set:html={svg} />
+	) : (
+		<span class="text-muted">{language ?? '—'}</span>
+	)
+}
