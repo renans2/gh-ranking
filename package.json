@@ -13,11 +13,16 @@
     "sync": "node --env-file-if-exists=.env scripts/sync.ts"
   },
   "dependencies": {
+    "@astrojs/react": "^7.1.1",
     "@iconify-json/devicon": "^1.2.71",
     "@iconify/utils": "^3.1.7",
     "@supabase/supabase-js": "^2.118.0",
     "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "astro": "^7.4.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {

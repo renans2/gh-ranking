@@ -1,5 +1,6 @@
 ---
 import LeaderboardTable from '../components/LeaderboardTable.astro';
+import ThemeToggle from '../components/ThemeToggle';
 import Layout from '../layouts/Layout.astro';
 import { getLeaderboard } from '../lib/leaderboard';
 
@@ -9,7 +10,10 @@ const previousDate = rows[0]?.previous_date;
 ---
 
 <Layout title="GitHub Star Ranking">
-	<h1 class="mb-1 text-[1.75rem] font-bold">Most-starred GitHub repos</h1>
+	<div class="flex items-center justify-between gap-4">
+		<h1 class="mb-1 text-[1.75rem] font-bold">Most-starred GitHub repos</h1>
+		<ThemeToggle client:load />
+	</div>
 	{
 		snapshotDate ? (
 			<p class="mb-6 text-muted">
