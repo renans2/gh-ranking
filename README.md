@@ -1,43 +1,34 @@
-# Astro Starter Kit: Minimal
+# GitHub Star Ranking
 
-```sh
-npm create astro@latest -- --template minimal
-```
+A table of the most-starred GitHub repos, with rank and star changes since the previous day.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- `scripts/sync.ts` fetches the top 100 repos from the GitHub search API and saves a daily snapshot to Supabase.
+- `.github/workflows/sync.yml` runs the sync every day at 00:17 UTC.
+- `src/pages/index.astro` reads the `leaderboard` view and renders the table.
 
-## 🚀 Project Structure
+## Setup
 
-Inside of your Astro project, you'll see the following folders and files:
+1. Create a Supabase project and run `supabase/migrations/20261025000000_init.sql` in the SQL Editor
+   (or `supabase db push` with the Supabase CLI).
+2. Copy `.env.example` to `.env` and fill in the values from **Project Settings > API Keys**.
+3. Take the first snapshot and start the site:
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+   ```sh
+   npm install
+   GITHUB_TOKEN=$(gh auth token) npm run sync
+   npm run dev
+   ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+4. Push to GitHub and add the `SUPABASE_URL` and `SUPABASE_SECRET_KEY` repository secrets
+   (**Settings > Secrets and variables > Actions**) so the daily workflow can run.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Changes appear once there are snapshots from two different days.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Commands
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Command           | Action                                          |
+| :---------------- | :---------------------------------------------- |
+| `npm run dev`     | Start the dev server at `localhost:4321`        |
+| `npm run sync`    | Save today's snapshot (safe to re-run same day) |
+| `npm run build`   | Build the site to `./dist/`                     |
+| `npm run preview` | Preview the build locally                       |
