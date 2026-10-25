@@ -15,6 +15,14 @@ export function rankChange(row: { previous_date: string | null; rank_change: num
 	return { kind: 'same', amount: 0 };
 }
 
+/** The status line under a ranking's title, from its first leaderboard row. */
+export function snapshotStatus(row?: { snapshot_date: string; previous_date: string | null }) {
+	if (!row) return 'no snapshots yet, run `npm run sync` to take the first one';
+	return row.previous_date
+		? `snapshot ${row.snapshot_date}, compared with ${row.previous_date}`
+		: `snapshot ${row.snapshot_date}, nothing earlier to compare with yet`;
+}
+
 /** A day-over-day change such as "+312" or "-3"; empty when there's nothing to compare with. */
 export function changeLabel(change: number | null) {
 	if (change === null) return '';

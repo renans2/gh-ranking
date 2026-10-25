@@ -1,35 +1,43 @@
 ---
-import LanguageFilter from '../components/LanguageFilter.astro';
-import LeaderboardTable from '../components/LeaderboardTable.astro';
 import PageHeader from '../components/PageHeader.astro';
-import { STAR } from '../constants/sprites';
+import PixelIcon from '../components/PixelIcon';
+import { RANKING_PAGES } from '../constants/site';
+import { ARROW_RIGHT, TROPHY } from '../constants/sprites';
 import Layout from '../layouts/Layout.astro';
-import { getLeaderboard } from '../lib/leaderboard';
-import { selectedLanguage } from '../utils/language-filter';
 
-// Rendered on every request, so each visit reads the latest snapshot with one query.
-export const prerender = false;
-
-// All rows are rendered; ones outside ?language= start hidden, so the filter buttons
-// can switch languages in the page without loading it again.
-const rows = await getLeaderboard();
-const language = selectedLanguage(Astro.url.searchParams);
+// No data on this page, so it's built once at deploy time instead of on every request.
 ---
 
-<Layout title="GitHub Star Ranking">
+<Layout title="GitHub Rankings">
 	<PageHeader
-		title="GitHub Star Ranking"
-		icon={STAR}
+		title="GitHub Rankings"
+		icon={TROPHY}
 		iconColor="text-star"
-		snapshotDate={rows[0]?.snapshot_date}
-		previousDate={rows[0]?.previous_date}
+		status="daily snapshots of GitHub's top repos and users"
 	/>
-	{
-		rows.length > 0 && (
-			<>
-				<LanguageFilter rows={rows} selected={language} />
-				<LeaderboardTable rows={rows} language={language} />
-			</>
-		)
-	}
+	<div class="grid gap-8 sm:grid-cols-2">
+		{
+			Object.values(RANKING_PAGES).map((page) => (
+				<a
+					href={page.href}
+					class="group pixel-frame pixel-press flex flex-col gap-4 bg-surface p-6 hover:bg-hover"
+				>
+					<div class="flex items-center gap-4">
+						<span class="pixel-frame grid size-14 shrink-0 place-items-center bg-canvas [--px:2px]">
+							<PixelIcon art={page.icon} className={`size-9 ${page.iconColor}`} />
+						</span>
+						<h2 class="font-pixel text-sm leading-relaxed sm:text-base">{page.title}</h2>
+					</div>
+					<p class="text-xl leading-tight text-muted">{page.description}</p>
+					<span class="mt-auto flex items-center gap-2 font-pixel text-[10px] text-accent uppercase">
+						View ranking
+						<PixelIcon
+							art={ARROW_RIGHT}
+							className="h-2.5 w-1.5 transition-transform group-hover:translate-x-1"
+						/>
+					</span>
+				</a>
+			))
+		}
+	</div>
 </Layout>

@@ -6,19 +6,11 @@ interface Props {
 	/** Pixel-art sprite shown before the title, and its text color class. */
 	icon: readonly string[];
 	iconColor: string;
-	/** The leaderboard's latest snapshot day and the day it's compared with. */
-	snapshotDate?: string;
-	previousDate?: string | null;
+	/** Terminal-style line under the title, such as the snapshot dates. */
+	status: string;
 }
 
-const { title, icon, iconColor, snapshotDate, previousDate } = Astro.props;
-
-let status = 'no snapshots yet, run `npm run sync` to take the first one';
-if (snapshotDate) {
-	status = previousDate
-		? `snapshot ${snapshotDate}, compared with ${previousDate}`
-		: `snapshot ${snapshotDate}, nothing earlier to compare with yet`;
-}
+const { title, icon, iconColor, status } = Astro.props;
 ---
 
 <header class="mb-10">

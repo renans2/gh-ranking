@@ -44,7 +44,7 @@ const path = Astro.url.pathname.replace(/(.)\/$/, '$1');
 				<a href="/" class="font-pixel text-xs text-muted hover:text-accent">{SITE_NAME}</a>
 				<nav aria-label="Rankings" class="flex gap-5">
 					{
-						RANKING_PAGES.map(({ href, label }) => (
+						Object.values(RANKING_PAGES).map(({ href, label }) => (
 							<a
 								href={href}
 								aria-current={path === href ? 'page' : undefined}

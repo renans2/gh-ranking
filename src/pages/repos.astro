@@ -1,0 +1,31 @@
+---
+import LanguageFilter from '../components/LanguageFilter.astro';
+import LeaderboardTable from '../components/LeaderboardTable.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { RANKING_PAGES } from '../constants/site';
+import Layout from '../layouts/Layout.astro';
+import { getLeaderboard } from '../lib/leaderboard';
+import { snapshotStatus } from '../utils/format';
+import { selectedLanguage } from '../utils/language-filter';
+
+// Rendered on every request, so each visit reads the latest snapshot with one query.
+export const prerender = false;
+
+// All rows are rendered; ones outside ?language= start hidden, so the filter buttons
+// can switch languages in the page without loading it again.
+const rows = await getLeaderboard();
+const language = selectedLanguage(Astro.url.searchParams);
+const page = RANKING_PAGES.repos;
+---
+
+<Layout title={page.title}>
+	<PageHeader title={page.title} icon={page.icon} iconColor={page.iconColor} status={snapshotStatus(rows[0])} />
+	{
+		rows.length > 0 && (
+			<>
+				<LanguageFilter rows={rows} selected={language} />
+				<LeaderboardTable rows={rows} language={language} />
+			</>
+		)
+	}
+</Layout>

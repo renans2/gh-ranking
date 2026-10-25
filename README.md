@@ -2,7 +2,8 @@
 
 Daily rankings of GitHub, with rank and count changes since the previous day:
 
-- `/`: the 100 most-starred repos, filterable by language (`?language=`).
+- `/`: a menu with a card for each ranking (a static page, no database query).
+- `/repos`: the 100 most-starred repos, filterable by language (`?language=`).
 - `/users`: the 100 most-followed users.
 
 How it works:
@@ -10,8 +11,9 @@ How it works:
 - `scripts/sync.ts` saves a daily snapshot of each ranking to Supabase. Each ranking lives in
   `scripts/sync/` (repos come from the REST search API, users from the GraphQL API).
 - `.github/workflows/sync.yml` runs the sync every day at 00:17 UTC.
-- The pages are rendered on every request (on Vercel) from the `leaderboard` and
-  `user_leaderboard` views, one Supabase query per page.
+- The ranking pages are rendered on every request (on Vercel) from the `leaderboard` and
+  `user_leaderboard` views, one Supabase query per page. Each ranking's path, title and
+  description live in `RANKING_PAGES` (`src/constants/site.ts`).
 
 ## Setup
 
