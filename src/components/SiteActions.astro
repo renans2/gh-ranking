@@ -1,0 +1,22 @@
+---
+import { REPO_URL } from '../constants/site';
+import { GITHUB } from '../constants/sprites';
+import PixelIcon from './PixelIcon';
+import ThemeToggle from './ThemeToggle';
+
+// The GitHub link and theme switch: in the site header, or next to the title on the home page.
+---
+
+<div class="flex shrink-0 gap-4">
+	<a
+		href={REPO_URL}
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="Source code on GitHub"
+		title="Source code on GitHub"
+		class="pixel-frame pixel-press grid size-11 place-items-center bg-surface text-fg [--px:3px] hover:bg-hover"
+	>
+		<PixelIcon art={GITHUB} className="size-[22px]" />
+	</a>
+	<ThemeToggle client:load />
+</div>

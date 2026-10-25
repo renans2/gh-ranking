@@ -1,17 +1,22 @@
 ---
 import { Font } from 'astro:assets';
 import PixelIcon from '../components/PixelIcon';
-import ThemeToggle from '../components/ThemeToggle';
-import { AUTHOR, RANKING_PAGES, REPO_URL, SITE_NAME } from '../constants/site';
-import { GITHUB, HEART } from '../constants/sprites';
+import SiteActions from '../components/SiteActions.astro';
+import { AUTHOR, RANKING_PAGES, SITE_NAME } from '../constants/site';
+import { HEART } from '../constants/sprites';
 import { THEME_STORAGE_KEY } from '../constants/theme';
 import '../styles/global.css';
 
 interface Props {
 	title: string;
+	/**
+	 * The bar with the site name, menu and buttons. Pages that turn it off place
+	 * <SiteActions /> themselves, like the home page next to its title.
+	 */
+	siteHeader?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, siteHeader = true } = Astro.props;
 
 const path = Astro.url.pathname.replace(/(.)\/$/, '$1');
 ---
@@ -39,38 +44,30 @@ const path = Astro.url.pathname.replace(/(.)\/$/, '$1');
 		</script>
 	</head>
 	<body class="min-h-screen font-sans text-xl text-fg">
-		<header class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 pt-8">
-			<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-8">
-				<a href="/" class="font-pixel text-xs text-muted hover:text-accent">{SITE_NAME}</a>
-				<nav aria-label="Rankings" class="flex gap-5">
-					{
-						Object.values(RANKING_PAGES).map(({ href, label }) => (
-							<a
-								href={href}
-								aria-current={path === href ? 'page' : undefined}
-								class="font-pixel text-[10px] text-muted uppercase decoration-2 underline-offset-[6px] hover:text-accent aria-[current=page]:text-fg aria-[current=page]:underline"
-							>
-								{label}
-							</a>
-						))
-					}
-				</nav>
-			</div>
-			<div class="flex shrink-0 gap-4">
-				<a
-					href={REPO_URL}
-					target="_blank"
-					rel="noopener noreferrer"
-					aria-label="Source code on GitHub"
-					title="Source code on GitHub"
-					class="pixel-frame pixel-press grid size-11 place-items-center bg-surface text-fg [--px:3px] hover:bg-hover"
-				>
-					<PixelIcon art={GITHUB} className="size-[22px]" />
-				</a>
-				<ThemeToggle client:load />
-			</div>
-		</header>
-		<main class="mx-auto max-w-5xl px-4 pt-8 pb-10">
+		{
+			siteHeader && (
+				<header class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 pt-8">
+					<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-8">
+						<a href="/" class="font-pixel text-xs text-muted hover:text-accent">{SITE_NAME}</a>
+						<nav aria-label="Rankings" class="flex gap-5">
+							{
+								Object.values(RANKING_PAGES).map(({ href, label }) => (
+									<a
+										href={href}
+										aria-current={path === href ? 'page' : undefined}
+										class="font-pixel text-[10px] text-muted uppercase decoration-2 underline-offset-[6px] hover:text-accent aria-[current=page]:text-fg aria-[current=page]:underline"
+									>
+										{label}
+									</a>
+								))
+							}
+						</nav>
+					</div>
+					<SiteActions />
+				</header>
+			)
+		}
+		<main class:list={['mx-auto max-w-5xl px-4 pb-10', siteHeader ? 'pt-8' : 'pt-12']}>
 			<slot />
 		</main>
 		<footer class="flex items-center justify-center gap-2 px-4 pb-10 text-xl text-muted">

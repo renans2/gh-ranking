@@ -1,6 +1,7 @@
 ---
 import PageHeader from '../components/PageHeader.astro';
 import PixelIcon from '../components/PixelIcon';
+import SiteActions from '../components/SiteActions.astro';
 import { RANKING_PAGES } from '../constants/site';
 import { ARROW_RIGHT, TROPHY } from '../constants/sprites';
 import Layout from '../layouts/Layout.astro';
@@ -8,13 +9,15 @@ import Layout from '../layouts/Layout.astro';
 // No data on this page, so it's built once at deploy time instead of on every request.
 ---
 
-<Layout title="GitHub Rankings">
+<Layout title="GitHub Rankings" siteHeader={false}>
 	<PageHeader
 		title="GitHub Rankings"
 		icon={TROPHY}
 		iconColor="text-star"
 		status="daily snapshots of GitHub's top repos and users"
-	/>
+	>
+		<SiteActions slot="actions" />
+	</PageHeader>
 	<div class="grid gap-8 sm:grid-cols-2">
 		{
 			Object.values(RANKING_PAGES).map((page) => (
